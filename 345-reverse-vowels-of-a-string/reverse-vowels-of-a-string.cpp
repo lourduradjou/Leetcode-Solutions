@@ -8,24 +8,20 @@ public:
             return false;
     }
     string reverseVowels(string s) {
-        //store the vowels in a array reverse it and append
-        vector<char> vowelList;
-        for(char ch: s) {
-            if(isVowel(ch))     
-                vowelList.push_back(ch);
+        //solving the problem using two pointer approach to reduce tc and sc 
+        int start = 0, end = s.size()-1;
+        string word = s;
+
+        while(start < end) {
+            while(start < end && !isVowel(word[start]) ) 
+                start++;
+            while(start < end && !isVowel(word[end]) ) 
+                end--;
+            
+            swap(word[start], word[end]);
+            //after swappend move to the next letter 
+            start++; end--;
         }
-
-        reverse(vowelList.begin(), vowelList.end());
-        int i = 0;
-        string ans = "";
-
-        for(char ch: s) {
-            if(isVowel(ch))
-                ans += vowelList[i++];
-            else 
-                ans += ch;
-        }
-
-        return ans;
+        return word;
     }
 };

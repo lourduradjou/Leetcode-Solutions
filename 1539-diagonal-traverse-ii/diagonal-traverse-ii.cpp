@@ -1,28 +1,31 @@
 class Solution {
 public:
     vector<int> findDiagonalOrder(vector<vector<int>>& nums) {
-        vector<vector<int>> storageVec;
-        int length = nums.size();
-
-        for(int i = 0; i < length; i++) {
-            for(int j = 0; j < nums[i].size(); j++) {
-                storageVec.push_back( {i+j, length - i, nums[i][j]} );
-            }
-        }
-
-        sort(storageVec.begin(), storageVec.end(), [](auto& a, auto& b) {
-            return a[0] != b[0] ? a[0] < b[0] : a[1] < b[1];
-        });
-
         vector<int> ans;
-        
-        for(auto& it: storageVec) {
-            ans.push_back(it[2]);
+        queue<pair<int,int>> que;
+
+        que.push({0,0});
+
+        while( !que.empty() ) {
+            auto pair = que.front();
+             //getting the left most element;
+            //the check to go to the next line with col = 0;
+            que.pop();
+
+            int row = pair.first;
+            int col = pair.second;
+
+            ans.push_back(nums[row][col]);
+
+            if(col == 0 && row + 1 < nums.size())
+                que.push({row+1, col});
+            
+            //then check for right side check the rightboundary of that row also
+            if(col + 1 < nums[row].size()) 
+                que.push({row, col+1});
+            
         }
 
-        return ans;
-
+        return ans;         
     }
-
-
 };

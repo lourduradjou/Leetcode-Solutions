@@ -1,45 +1,29 @@
 class Solution {
 public:
-    vector<bool> checkArithmeticSubarrays(vector<int>& nums, vector<int>& l, vector<int>& r) {
-        vector<bool> result;
-        for (int i = 0; i < l.size(); i++) {
-            result.push_back(isArithmetic(nums, l[i], r[i]));
+
+    bool checkForArithmeticProgression(vector<int> &arr) {
+        sort(arr.begin(), arr.end());
+
+        int diff = arr[1] - arr[0];
+
+        for(int i = 2; i < arr.size(); i++) {
+            int nextDiff = arr[i] - arr[i-1];
+            if(diff != nextDiff) 
+                return false;
         }
-        return result;
+
+        return true;
     }
 
-    bool isArithmetic(vector<int>& nums, int l, int r) {
-        int maxVal = INT_MIN, minVal = INT_MAX;
+    vector<bool> checkArithmeticSubarrays(vector<int>& nums, vector<int>& l, vector<int>& r) {
+        vector<bool> ans;
 
-        for (int i = l; i <= r; i++) {
-            maxVal = max(nums[i], maxVal);
-            minVal = min(nums[i], minVal);
+        for(int i = 0; i < l.size(); i++) {
+            vector<int> arr(nums.begin() + l[i], nums.begin() + r[i] + 1);
+            ans.push_back(checkForArithmeticProgression(arr));
         }
 
-        int len = r - l + 1;
-        if ((maxVal - minVal) % (len - 1) != 0) {
-            return false;
-        }
+        return ans;
 
-        int diff = (maxVal - minVal) / (len - 1);
-        if (diff == 0) {
-            return true;
-        }
-
-        vector<bool> visited(len, false);
-
-        for (int i = l; i <= r; i++) {
-            int val = nums[i];
-            if ((val - minVal) % diff != 0) {
-                return false;
-            } else {
-                int pos = (val - minVal) / diff;
-                if (visited[pos]) {
-                    return false;
-                }
-                visited[pos] = true;
-            }
-        }
-        return true;
     }
 };

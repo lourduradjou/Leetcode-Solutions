@@ -1,19 +1,34 @@
 class Solution {
 public:
     int maxCoins(vector<int>& piles) {
-        int maxPiles = 0;
-        sort(piles.begin() , piles.end());
+        //find the max one and also the freq of the elements
+        int maxi = *max_element(piles.begin(), piles.end());
+        int n = piles.size();
+        vector<int> freq(maxi + 1, 0);
 
-        int left = 0;
-        int right = piles.size() - 1;
+        for(int i = 0; i < n; i++) {
+            freq[piles[i]]++;
+        }  
 
-        while(left <= right) {
-            maxPiles += piles[right - 1];
-            cout<<piles[right-1]<<endl;
-            left++;
-            right -= 2;
+        int maxCoins = 0;
+        int chance = n / 3;
+        bool turn = true;
+
+        while(chance) {
+            if(freq[maxi] > 0) {
+                if(turn) turn = false;
+                else {
+                    chance--;
+                    turn = true;
+                    maxCoins += maxi;
+                }
+                freq[maxi]--;
+            }
+            else {
+                maxi--;
+            }
         }
 
-        return maxPiles;
+        return maxCoins;
     }
 };

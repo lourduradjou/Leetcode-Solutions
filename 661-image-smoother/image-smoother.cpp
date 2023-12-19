@@ -10,15 +10,12 @@ public:
             for(int col = 0; col < colSize; col++) {
                 int totalSum = 0;
                 int count = 0;
-                for(int i = -1; i <= 1; i++) {
-                    for(int j = -1; j <= 1; j++) {
-                        int newRow = row + i;
-                        int newCol = col + j;
-                        if( newRow >= 0 && newRow < rowSize && newCol >= 0 && newCol < colSize)
-                        {
-                            totalSum += img[newRow][newCol];
+                for(int i = max(0, row - 1); i < min(rowSize, row + 2); i++) {
+                    for(int j = max(0, col - 1); j < min(colSize, col + 2); j++) {
+            
+                            totalSum += img[i][j];
                             count += 1;
-                        }
+                        
                     }
                 }
                 ans[row][col] = totalSum / count;

@@ -3,23 +3,22 @@ public:
     int buyChoco(vector<int>& prices, int money) {
         //find the two minimum , add them and subtract with the money
         //you have if not negative return the leftover else return the money 
-        sort(prices.begin(), prices.end());
+        //sort(prices.begin(), prices.end());
 
-        int firstMin = prices[0];
-        int secondMin = prices[1];
+        int firstMin = min(prices[0], prices[1]);
+        int secondMin = max(prices[0], prices[1]);
+
+        for(int i = 2; i < prices.size(); i++) {
+            if(prices[i] < firstMin) {
+                secondMin = firstMin;
+                firstMin = prices[i];
+            }
+            else if(prices[i] < secondMin) {
+                secondMin = prices[i];
+            }
+        }
 
         int leftOverMoney = money - (firstMin + secondMin);
-
-        if(leftOverMoney < 0) 
-            return money;
-        else
-            return leftOverMoney;
-
-        // for(int i = 1; i < prices.size(); i++) {
-        //     if(prices[i] <= firstMin) {
-        //         secondMin = firstMin;
-        //         firstMin = prices[i];
-        //     }
-        // }
+        return leftOverMoney < 0 ? money : leftOverMoney;
     }
 };

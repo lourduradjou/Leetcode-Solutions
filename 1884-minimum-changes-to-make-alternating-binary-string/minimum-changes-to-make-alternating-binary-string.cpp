@@ -10,9 +10,7 @@ public:
         for(int i = 0; i < n; i++) {
             if((i % 2 == 0) && s[i] != '0') cnt_With_Starting_Zero++;
             if((i % 2 == 1) && s[i] != '1') cnt_With_Starting_Zero++;
-        }
 
-        for(int i = 0; i < n; i++) {
             if((i % 2 == 0) && s[i] != '1') cnt_With_Starting_One++;
             if((i % 2 == 1) && s[i] != '0') cnt_With_Starting_One++;
         }

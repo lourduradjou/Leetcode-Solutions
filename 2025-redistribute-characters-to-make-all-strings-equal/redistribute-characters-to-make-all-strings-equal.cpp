@@ -7,8 +7,8 @@ public:
         if(n == 1)
             return true;
         unordered_map<char,int> freq;
-        for(string word : words) {
-            for(char ch: word) {
+        for(string& word : words) {
+            for(char& ch: word) {
                 freq[ch]++;
             }
         }

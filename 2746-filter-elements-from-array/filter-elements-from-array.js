@@ -5,9 +5,9 @@
  */
 var filter = function(arr, fn) {
     let filteredArray = [];
-    for(let i = 0; i < arr.length; i++) {
-        if(fn(arr[i],i))
-            filteredArray.push(arr[i]);
-    }
+    arr.forEach((element,index) => {
+        if(fn(element,index))
+            filteredArray.push(element);
+    })
     return filteredArray;
 };

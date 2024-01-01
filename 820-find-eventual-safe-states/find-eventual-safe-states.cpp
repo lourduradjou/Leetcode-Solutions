@@ -11,7 +11,7 @@ public:
         for(int i = 0; i < V; i++) {
             //i -> it;
             //it -> i;
-            for(auto it: graph[i]) {
+            for(auto& it: graph[i]) {
                 adjRev[it].push_back(i);
                 inDegree[i]++;
             }
@@ -30,7 +30,7 @@ public:
             q.pop();
             safeNodes.push_back(node);
             //if the node is in the queue surely it doesnt have any outdegree so terminal node
-            for(auto it: adjRev[node]) {
+            for(auto& it: adjRev[node]) {
                 inDegree[it]--;
                 if(inDegree[it] == 0)
                     q.push(it);

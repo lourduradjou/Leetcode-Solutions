@@ -6,15 +6,10 @@ function memoize(fn) {
     let dp = {};
     return function(...args) {
         const value = JSON.stringify(args);//passing values not an array so ... is not used
-
-        if(value in dp) {
-            return dp[value];
+        if(dp[value] === undefined) {
+            dp[value] = fn(...args);
         }
-        else {
-            let tempValue = fn(...args);
-            dp[value] = tempValue;
-            return tempValue;
-        }
+        return dp[value];
     }
 }
 

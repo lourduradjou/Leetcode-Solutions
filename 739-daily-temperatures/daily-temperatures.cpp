@@ -4,17 +4,23 @@ public:
         //brute force is
         int n = temperatures.size(); 
         vector<int> ans(n, 0);
-        stack<pair<int,int>> st;
+        //a tricky algo to solve this problem using constact space
+        int maxHottest = -1;
 
-        for(int i = n-1; i >= 0; i--) {
-            while(!st.empty() && st.top().first <= temperatures[i]) 
-                st.pop();
+        for(int i = n - 1; i >= 0; i--) {
+            if(temperatures[i] >= maxHottest) {
+                maxHottest = temperatures[i];
+                continue;
+            }
 
-            if(!st.empty()) 
-                ans[i] = st.top().second - i;
-            
-            st.push({temperatures[i], i});
+            int days = 1;
+            while(temperatures[i + days] <= temperatures[i]) {
+                days += ans[i + days];
+            }
+
+            ans[i] = days;
         }
+
         return ans;
     }
 };

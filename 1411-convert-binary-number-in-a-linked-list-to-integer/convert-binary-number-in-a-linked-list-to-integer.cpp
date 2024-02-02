@@ -11,11 +11,10 @@
 class Solution {
 public:
     int getDecimalValue(ListNode* head) {
-           int MOD = 1e9 + 7;
            int decimalEquivalent = 0;
            
            while(head) {
-               decimalEquivalent = (decimalEquivalent * 2 + head->val) % MOD;
+               decimalEquivalent = (decimalEquivalent * 2 + head->val);
                head = head->next;
            }
            

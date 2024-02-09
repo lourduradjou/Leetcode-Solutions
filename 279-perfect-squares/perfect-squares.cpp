@@ -1,20 +1,28 @@
 class Solution {
 public:
-    int find_Perfect_Squares(int n, vector<int> &dp) {
-        if(n <= 0) return 0;
+    int numSquares(int n) {
+        //using legendre's three sqaure sum formula this could be easily solved
+        //at max we can represent a number by 4 number of sqaure sums
+        //and legendre's says if the equation 4^k(8m + 7) == 0 then only four times is the only possible and shortest way
+        //to represent in sqaures sum way
+        int squareNum = (int)sqrt(n);
+        if(squareNum * squareNum == n) return 1;
 
-        if(dp[n] != -1) return dp[n];
+        while(n % 4 == 0) // (4^k) * (8m + 7)
+            n /= 4;     
+        if(n % 8 == 7) return 4;
 
-        int ans = n;
+        //here n is modified but will still work, because even if it is modified you are still finding the answer for that
+        //modified one only, and also it it only divided by 4 if it is divisible by four.
         for(int i = 1; i * i <= n; i++) {
-            int square = i * i;
-            ans = min(ans, 1 + find_Perfect_Squares(n - square, dp));
+            int squareA = i * i;
+            int possibleNum = (int) sqrt(n - squareA);
+
+            if(possibleNum * possibleNum == n - squareA)
+                return 2;
         }
 
-        return dp[n] = ans;
-    }
-    int numSquares(int n) {
-        vector<int> dp(n+1, -1);
-        return find_Perfect_Squares(n, dp);
+        return 3;
+
     }
 };

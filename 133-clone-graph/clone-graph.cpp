@@ -22,49 +22,16 @@ public:
 class Solution {
 public:
     Node* cloneGraph(Node* node) {
-        if(!node) return NULL;
+        static unordered_map<Node*, Node*> copies;
+        if(!node) return NULL; 
 
-        unordered_map<Node*, Node*> copies;
-        Node* copy = new Node(node -> val);
-        copies[node] = copy;
-        queue<Node*> todo;
-        todo.push(node);
-
-        while(!todo.empty()) {
-            Node* current = todo.front();
-            todo.pop();
-
-            for(Node* neighbor: current -> neighbors) {
-                if(copies.find(neighbor) == copies.end()) {
-                    //create the node first and assign in the map also
-                    copies[neighbor] = new Node(neighbor -> val);
-                    todo.push(neighbor);
-                }
-                copies[current] -> neighbors.push_back(copies[neighbor]);
+        if(copies.find(node) == copies.end()) {
+            copies[node] = new Node(node -> val);
+            for(Node* neighbor: node -> neighbors) {
+                copies[node] -> neighbors.push_back(cloneGraph(neighbor));
             }
         }
-        return copy;
+
+        return copies[node];
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

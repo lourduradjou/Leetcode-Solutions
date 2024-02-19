@@ -1,22 +1,21 @@
 class Solution {
 public:  
     int findLeastNumOfUniqueInts(vector<int>& arr, int k) {
+        //solving using minheap;
+        priority_queue<int, vector<int>, greater<int>> freqMinHeap;
         unordered_map<int, int> mpp;
         for(auto it: arr) {
             mpp[it]++;
         }
 
-        vector<int> freqVector;
         for(auto it: mpp) 
-            freqVector.push_back(it.second);
-        
-        //now we have freq vector lets sort it and then reduce the element 
-        //which are actually reducible
-        sort(freqVector.begin(), freqVector.end());
+            freqMinHeap.push(it.second);
+
         int elementReduced = 0;
-        for(int i = 0; i < freqVector.size(); i++) {
-            elementReduced += freqVector[i];
-            if(elementReduced > k) return freqVector.size() - i;
+        while(!freqMinHeap.empty()) {
+            elementReduced += freqMinHeap.top();
+            if(elementReduced > k) return freqMinHeap.size();
+            freqMinHeap.pop();
         }
 
         return 0;

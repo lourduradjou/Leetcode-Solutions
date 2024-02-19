@@ -1,30 +1,25 @@
 class Solution {
-public:
-
-    
+public:  
     int findLeastNumOfUniqueInts(vector<int>& arr, int k) {
-        unordered_map<int,int>mp;
-        for(auto a : arr)mp[a]++;
+        unordered_map<int, int> mpp;
+        for(auto it: arr) {
+            mpp[it]++;
+        }
+
+        vector<int> freqVector;
+        for(auto it: mpp) 
+            freqVector.push_back(it.second);
         
-        vector<int>v;
-        int cnt=0;
-        for(auto a :mp){
-            v.push_back(a.second);
-        }
-        sort(v.begin(),v.end());
-        for(int i =0;i<v.size();i++){
-            if(k > v[i]){
-                k-=v[i];
-                v[i]=0;
-            }else{
-                v[i] -= k;
-                k =0;
-            }
-            if(v[i]!=0)cnt++;
+        //now we have freq vector lets sort it and then reduce the element 
+        //which are actually reducible
+        sort(freqVector.begin(), freqVector.end());
+        int elementReduced = 0;
+        for(int i = 0; i < freqVector.size(); i++) {
+            elementReduced += freqVector[i];
+            if(elementReduced > k) return freqVector.size() - i;
         }
 
-        return cnt;
-
+        return 0;
     }
 };
 

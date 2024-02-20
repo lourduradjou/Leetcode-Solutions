@@ -1,13 +1,21 @@
 class Solution {
 public:
     int missingNumber(vector<int>& nums) {
-        int a = 0, b = 0, n = nums.size();
-        for(int i = 0; i < n; i++) {
-            a ^= i;
-            b ^= nums[i];
+        //binary search approach
+        //sort the array first
+        sort(nums.begin(), nums.end());
+        int low = 0;
+        int high = nums.size() - 1;
+
+        while( low <= high ) {
+            int mid = low + (high - low) / 2;
+
+            if( nums[mid] == mid )
+                low = mid + 1;
+            else 
+                high = mid - 1;
         }
 
-        a ^= n;
-        return a ^ b;
+        return low;
     }
 };

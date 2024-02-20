@@ -1,114 +1,116 @@
 class Solution {
+private:
+    void dfs(int node, vector<vector<int>> &adj, vector<int> &vis, vector<int> &finishTime) {
+        vis[node] = 1;
+        for (auto it: adj[node]) {
+            if (!vis[it]) 
+                dfs(it, adj, vis, finishTime);
+        }
+        finishTime.push_back(node);
+    }
+
+    void dfs2(int node, vector<vector<int>> &adjT, vector<int> &vis, vector<int> &temp) {
+        vis[node] = 1;
+        if(adjT[node].size() == 0) return;
+        temp.push_back(node);
+
+        for(auto it: adjT[node]) {
+            if (!vis[it]) {
+                dfs2(it, adjT, vis, temp);
+            }
+        }
+    }
+
+    void dfsCheck_Outdegree(int node, vector<vector<int>> &adj, map<int,int> &mp, vector<int> &visited, bool &flg) {
+        visited[node] = 1;
+        for(auto it: adj[node]) {
+            if (mp[it] != 1) {
+                flg = false;
+                return;
+            }
+            if (!visited[it]) 
+                dfsCheck_Outdegree(it, adj, mp, visited, flg);
+        }
+    }
+
 public:
-void dfs(int node, vector<vector<int>>& g, vector<int> &vis, stack<int> &st){
-    vis[node] = 1;
-    for(auto ch: g[node]){
-        if(vis[ch]) continue;
-        dfs(ch,g,vis,st);
-    }
-    st.push(node);
-}
-
-void dfs2(int node, vector<vector<int>>& gr, vector<int> &v,vector<int> &temp){
-    v[node] = 1;
-    if(gr[node].size() == 0) return;
-    temp.push_back(node);
-    for(auto ch: gr[node]){
-        if(v[ch]) continue;
-        dfs2(ch,gr,v,temp);
-    }
-}
-
-void dfs_to_check_outdegree(int v,vector<vector<int>>& g,map<int,int> &mp, vector<int> & visted, bool &flg){
-    visted[v] = 1;
-    for(auto ch: g[v]){
-        if(mp[ch] != 1) {
-            flg = false; return;
+    vector<string> maxNumOfSubstrings(string s) {
+        int n = s.size();
+        vector<int> firstOccurance(26, INT_MAX), lastOccurance(26, INT_MIN); 
+        for (int i = 0; i < n; i++) {
+            int index = s[i] - 'a';
+            firstOccurance[index] = min(firstOccurance[index], i);
+            lastOccurance[index] = i;
         }
-        if(!visted[ch]){
-            dfs_to_check_outdegree(ch,g,mp,visted,flg);
-        }
-    }
-}
 
-vector<string> maxNumOfSubstrings(string s) {
-    int n = s.size();
-    vector<int> l(26, INT_MAX), r(26, INT_MIN);
-    for (int i = 0; i < n; ++i) {
-        l[s[i] - 'a'] = min(l[s[i] - 'a'], i);
-        r[s[i] - 'a'] = i;
-    }
-
-    vector<vector<int>> g(27);
-    // graph formation
-    for(int i=0;i<n;i++){
-        for(int j=0;j<26;j++){
-            if( l[s[i]-'a'] != INT_MAX ){
-                if(l[j] <= i && r[j] >= i){
-                    g[j].push_back(s[i]-'a');
-                    // cout<<(char)(j+'a')<<" "<<s[i]-'a'<<endl;
+        vector<vector<int>> adj(27);
+        //creating the graph
+        for (int i = 0; i < n; i++) {
+            int index = s[i] - 'a';
+            for(int j = 0; j < 26; j++) {
+                if (firstOccurance[index] != INT_MAX) {
+                    if(firstOccurance[j] <= i && lastOccurance[j] >= i)
+                        adj[j].push_back(index);
                 }
             }
         }
-    }
 
-    // Step 1
-    n = 26;
-    stack<int> end_time;
-    vector<int> vis(n,0);
-    for(int i=0;i<n;i++){
-        //  if( l[s[i]-'a'] != INT_MAX ) continue;
-        if(!vis[i]){
-            dfs(i,g,vis,end_time);
+        //step 1
+        //perform dfs and find the endtime here lets use a vector
+        //instead of stack to make it easy ..
+        n = 26;
+        vector<int> finishTime;
+        vector<int> vis(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (!vis[i])
+                dfs(i, adj, vis, finishTime);
         }
-    }
-    // Step 2
-    vector<vector<int>> gr(n);
-    for(int i=0;i<n;i++){
-        for(auto ch: g[i]){
-            gr[ch].push_back(i);
-        }
-    }
 
-    // Step 3
-    vector<int> v(n,0);
-    vector<int> degree(n,0);
-    vector<vector<int>> scc;
-    for(int i=0;i<n;i++){
-        int node = end_time.top(); end_time.pop();
-        if(v[node]) continue;
-        vector<int> temp;
-        dfs2(node,gr,v,temp);
-        scc.push_back(temp);
-    }
-
-    vector<string> ans;
-    for(auto it: scc){
-        vector<int> visted(n,0);
-
-        if(it.size()!=0){
-            // cout<<(char)(it[0]+'a')<<endl;
-            map<int,int> mp;
-            for(auto ele: it) mp[ele] = 1;
-            bool flg = true;
-            dfs_to_check_outdegree(it[0],g,mp,visted,flg);
-            if(flg == true){
-                // cout<<(char)(it[0]+'a')<<endl;
-                int min_l = 1e9, max_r = -1;
-                for(auto ele: it){
-                    min_l = min(min_l, l[ele]);
-                    max_r = max(max_r, r[ele]);
-                }
-                ans.push_back(s.substr(min_l,max_r-min_l+1));
+        //step 2 is to reverse the edges betweene each vertices
+        vector<vector<int>> adjT(n);
+        for(int i = 0; i < n; i++) {
+            for(auto it: adj[i]) {
+                adjT[it].push_back(i);
             }
         }
-        
-    }
 
-    return ans;
-}
+        //step 3 is to iterate using dfs and find the scc 
+        vector<int> v(n,0); //reassigning the vis to use it again
+        vector<vector<int>> scc;
+        for(int i = n-1; i >= 0; i--) {
+            int node = finishTime[i];
+            if (!v[node]) {
+                vector<int> temp;
+                dfs2(node, adjT, v, temp);
+                scc.push_back(temp);
+            }
+        }
+
+
+        vector<string> ans;
+        for (auto it: scc) {
+            vector<int> visited(n, 0);
+
+            if(it.size() != 0) {
+                map<int, int> mp;
+                for(auto ele: it) mp[ele] = 1;
+                bool flg = true;
+                dfsCheck_Outdegree(it[0], adj, mp, visited, flg);
+                
+                //if there is not outdegree
+                //this algo picks up the lowest index and high index withing that scc
+                //out degree is indicated by this flg variable , true means no outdegree
+                if (flg == true) {
+                    int minIndex = 1e9, maxIndex = -1;
+                    for(auto ele: it) {
+                        minIndex = min(minIndex, firstOccurance[ele]);
+                        maxIndex = max(maxIndex, lastOccurance[ele]);
+                    }
+                    ans.push_back(s.substr(minIndex, maxIndex - minIndex + 1));
+                }
+            }
+        }
+
+        return ans;
+    }
 };
-  
-// a -> d e f a d d 
-// c -> c c 
-// d -> e f a d 

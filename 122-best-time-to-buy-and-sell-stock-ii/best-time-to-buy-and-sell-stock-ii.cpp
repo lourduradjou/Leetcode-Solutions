@@ -1,5 +1,8 @@
 class Solution {
 private:
+    static const int BUY = 1;
+    static const int SELL = 0;
+
     int solve (int i, int can_I_Buy, int &n, vector<int> &prices,
      vector<vector<int>> &dp) {
         if (i == n)
@@ -9,16 +12,16 @@ private:
             return dp[i][can_I_Buy];
         int profit = 0;
 
-        if (can_I_Buy) {
+        if (can_I_Buy == BUY) {
             //there will be two options where i can buy or i can skip
             //for this specific i th index
-            int take = -prices[i] + solve(i + 1, 0, n, prices, dp);
-            int skip = 0 + solve(i + 1, 1, n, prices, dp);
+            int take = -prices[i] + solve(i + 1, SELL, n, prices, dp);
+            int skip = 0 + solve(i + 1, BUY, n, prices, dp);
             profit = max(take, skip);
         } 
         else {
-            int sell = prices[i] + solve(i + 1, 1, n, prices, dp);
-            int notSelled = 0 + solve(i + 1, 0, n, prices, dp);
+            int sell = prices[i] + solve(i + 1, BUY, n, prices, dp);
+            int notSelled = 0 + solve(i + 1, SELL, n, prices, dp);
             profit = max(sell, notSelled);
         }
 

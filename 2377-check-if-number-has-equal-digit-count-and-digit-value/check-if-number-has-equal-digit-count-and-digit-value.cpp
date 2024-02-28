@@ -1,23 +1,15 @@
 class Solution {
 public:
     bool digitCount(string num) {
-        unordered_map<char, int> freqMap;
+        unordered_map<int, int> freqMap;
         for(auto ch: num)
-            freqMap[ch]++;
+            freqMap[ch - '0']++;
         
-        // for(auto it: freqMap) {
-        //     cout<<it.first<<" "<<it.second<<endl;
-        // }
         for (int i = 0; i < num.size(); i++) {
-            int digitFreq = freqMap['0' + i];
-            int occurance = num[i] - '0';
-            // cout<<digitFreq<<" "<<occurance<<endl;
-
-            if ( digitFreq != occurance )
+            if (freqMap[i] != num[i] - '0')
                 return false;
         }
 
         return true;
-
     }
 };

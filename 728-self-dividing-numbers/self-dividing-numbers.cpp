@@ -3,19 +3,17 @@ private:
     bool isSelfDividingNumber(int num) {
         int divident = num;
 
-        string divisorString = to_string(num);
-        reverse(divisorString.begin(), divisorString.end());
-
-        for(auto divChar: divisorString) {
-            int divisor = stoi(string(1,divChar));
-            if (divisor == 0) return false;
-            if ( divident % divisor != 0 )
+        while ( num > 0 ) {
+            int divisor = num % 10;
+            if (divisor == 0 || divident % divisor != 0) {
                 return false;
+            }
+            num = num / 10;
         }
 
         return true;
-
     }
+    
 public:
     vector<int> selfDividingNumbers(int left, int right) {
         vector<int> ans;

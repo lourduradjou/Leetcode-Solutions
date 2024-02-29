@@ -1,60 +1,50 @@
-
 class Solution {
+private:
+    bool checkEvenLevel(TreeNode* frontNode, int prev) {
+        return frontNode->val %2==0 || frontNode->val <=  prev;
+    }
+
+    bool checkOddLevel(TreeNode* frontNode,int prev) {
+        return frontNode->val %2!=0  || frontNode->val  >= prev;
+    }
+
+    void insertNode(TreeNode* node, queue<TreeNode*>& q) {
+        if (node->left)
+            q.push(node->left);
+        if (node->right)
+            q.push(node->right);
+    }
 public:
     bool isEvenOddTree(TreeNode* root) {
-        //at even level , node values should be increasing and it gotta be odd
-        //at odd level , node values should be decreasing and it gota be even
-        //simple bfs from left to right and at each level check the condition
-        queue<pair<TreeNode*,int>> q;
-        q.push({root, 0});
-        //for root 
-        if (root->val % 2 == 0)
-            return false;
+        if (root == NULL)
+            return true;
+        if (root->val % 2 == 0) return false;
 
-        while ( !q.empty() ) {
-            TreeNode* node = q.front().first;
-            int level = q.front().second;
-            q.pop();
+        queue<TreeNode*> q;
+        q.push(root);
+        bool isEvenLevel = true;
 
-            //checking the current node status
-            if (level % 2 == 1 && node->val % 2 == 1) return false;
-            if (level % 2 == 0 && node->val % 2 == 0) return false;
+        while (!q.empty()) {
+            int size = q.size();
+            int prev = isEvenLevel ? INT_MIN : INT_MAX;
 
-            if (node->left) 
-                q.push({node->left, level + 1});
-            if (node->right)
-                q.push({node->right, level + 1});
+            for (int i = 0; i < size; i++) {
+                TreeNode* frontNode = q.front();
+                q.pop();
 
-            if (level % 2 == 0)
-            {
-                while (!q.empty() && q.front().second % 2 == 0) {
-                    TreeNode* nextNode = q.front().first;
-                    if (nextNode->val <= node->val || nextNode->val % 2 == 0)
+                if (isEvenLevel) {
+                    if (checkEvenLevel(frontNode, prev))
                         return false;
-
-                    if (nextNode->left)
-                        q.push({nextNode->left, level+1});
-                    if (nextNode->right)
-                        q.push({nextNode->right, level + 1});
-                    
-                    node = nextNode;
-                    q.pop();
                 }
-            } else {
-                while (!q.empty() && q.front().second % 2 == 1) {
-                    TreeNode* nextNode = q.front().first;
-                    if (nextNode->val >= node->val || nextNode->val % 2 == 1)
+                else {
+                    if (checkOddLevel(frontNode, prev))
                         return false;
-
-                    if (nextNode->left)
-                        q.push({nextNode->left, level+1});
-                    if (nextNode->right)
-                        q.push({nextNode->right, level + 1});
-
-                    node = nextNode;
-                    q.pop();
                 }
+
+                insertNode(frontNode,  q);
+                prev = frontNode->val;
             }
+            isEvenLevel = !isEvenLevel;
         }
         return true;
     }

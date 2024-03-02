@@ -40,12 +40,10 @@ public:
         DisjointSet aliceGraph(n+1);
         DisjointSet bobGraph(n+1);
 
-        sort(edges.begin(), edges.end(), [&](const auto &x, const auto &y) {
-            return x[0] > y[0]; //compare the third types and sort then first
-        });
+        int alice_edges = 0;
+        int bob_edges = 0;
+        int removed_edges = 0;
 
-
-        int alice_edges = 0, bob_edges = 0, removed_edges = 0;
         for (auto edge : edges) {
             if (edge[0] == 3) {
                 if ( aliceGraph.Union(edge[1], edge[2]) ) {
@@ -57,14 +55,17 @@ public:
                 else
                     removed_edges++;
             } 
-            else if (edge[0] == 2) //bob only
+        }
+
+        for (auto edge : edges) {
+            if (edge[0] == 2) //bob only
             {
                 if ( bobGraph.Union(edge[1], edge[2])) 
                     bob_edges++;
                 else 
                     removed_edges++;
             }
-            else { //alice only
+            else if (edge[0] == 1){ //alice only
                 if ( aliceGraph.Union(edge[1], edge[2])) 
                     alice_edges++;
                 else 

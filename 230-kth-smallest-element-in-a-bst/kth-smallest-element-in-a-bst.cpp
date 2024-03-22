@@ -10,17 +10,24 @@
  * };
  */
 class Solution {
-public:
-    vector<int> treeValues;
-    void findKthNumber(TreeNode* root) {
-        if (root == NULL) return;
-        findKthNumber(root->left);
-        treeValues.push_back(root->val);
-        return findKthNumber(root->right);
-    }
+private:
+    TreeNode* solve(TreeNode* root, int& k) {
+        if (root == NULL)
+            return NULL;
+        
+        TreeNode* left = solve(root->left, k);
 
+        if (left != NULL)
+            return left; //return the node when it is not null no need to check further here
+        
+        if (--k == 0)
+            return root;
+        //cout<<root->val<<" "<<k<<endl;
+        return solve(root->right, k);
+    }
+public:
     int kthSmallest(TreeNode* root, int k) {
-        findKthNumber(root);
-        return treeValues[k-1];
+        TreeNode* ans = solve(root, k);
+        return (ans == NULL) ? -1 : ans->val;
     }
 };

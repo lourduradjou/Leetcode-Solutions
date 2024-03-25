@@ -2,13 +2,17 @@ class Solution {
 public:
     vector<int> findDuplicates(vector<int>& nums) {
         vector<int> ans;
-        unordered_set<int> st;
 
-        for (auto it: nums) {
-            if (st.find(it) != st.end())
-                ans.push_back(it);
+        for (int i = 0; i < nums.size(); i++) {
+            int index = abs(nums[i]) - 1;
+            if (nums[index] < 0)
+                ans.push_back(index + 1);
             else
-                st.insert(it);
+                nums[index] = -nums[index];
+
+            // for (int j = 0; j < nums.size(); j++)
+            //     cout<<nums[j]<<" ";
+            // cout<<endl;
         }
 
         return ans;

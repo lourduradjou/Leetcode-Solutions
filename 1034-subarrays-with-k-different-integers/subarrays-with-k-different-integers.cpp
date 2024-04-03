@@ -1,7 +1,7 @@
 class Solution {
 private:
     int findSubArrayCounts(vector<int> &nums, int goal) {
-        if (goal < 0) return 0;
+        if (goal <= 0) return 0;
         
         int l = 0, r = 0;
         int n = nums.size();

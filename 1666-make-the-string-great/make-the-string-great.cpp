@@ -2,7 +2,7 @@ class Solution {
 
 private:
     bool check(stack<char> &st, string &s, int i) {
-        return (!st.empty() && st.top() != s[i]) && (st.top() == tolower(s[i]) || st.top() == toupper(s[i]));
+        return (!st.empty() && abs(st.top() - s[i]) == 32);
     }
 public:
     string makeGood(string s) {

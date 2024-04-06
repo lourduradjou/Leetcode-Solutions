@@ -1,41 +1,41 @@
 class Solution {
 public:
     string minRemoveToMakeValid(string s) {
-        //using a double loop we can easily marks the unwanted stuffs and finally
-        //iterate to find the answer string intuitive approach
-        // tc: O(3n)
-        //first iteration to find the number of open parenthesis and its corresponding matches 
-        //of closing parenthesis
+        //now with stack
+        //the complexity of tc: O(2n) quite better than previous one without stack almost same only
+        //first pass
+        //simpply count the parenthesis if right ')' goes more than left
+        //just reduce and move on this maintains that no pairs with more right parenthesis exists
+        //example )))aaa here each time the ))) gets ignored finally the last letters gets added
+        //second loop avoid the extra leftparethesis if any and add the string (answer)
+        int leftParenthesis = 0;
+        int rightParenthesis = 0;
 
-        int openParenthesisCount = 0;
-        for (int i = 0; i < s.size(); i++) {
-            if (s[i] == '(')
-                openParenthesisCount++;
-            else if (s[i] == ')') {
-                //check for parenthesis count here , open count is 0 means we dont have matching pair
-                if (openParenthesisCount == 0)
-                    s[i] = '*';
-                else
-                    openParenthesisCount--;
-                //a pair exists so reduce the count of open parenthesis in else part
-            }
+        stack<char> st;
+
+        for (char ch: s) {
+            if (ch == '(')
+                leftParenthesis++;
+            if (ch == ')')
+                rightParenthesis++;
+            
+            if (rightParenthesis > leftParenthesis)
+                rightParenthesis--;
+            else
+                st.push(ch);
         }
 
-        //second pass to remaining open parenthesis , leftover parenthesis 
-        for (int i = s.size() - 1; i >= 0; i--) {
-            if (s[i] == '(' && openParenthesisCount > 0)
-            {
-                //means there exists some unwanted count of open parenthesis
-                s[i] = '*';
-                openParenthesisCount--;
-            }
+        string answer = "";
+        while (!st.empty()) {
+            char currChar = st.top();
+            st.pop();
+            if (leftParenthesis > rightParenthesis && currChar == '(')
+                leftParenthesis--;
+            else
+                answer += currChar;
         }
 
-        string ans = "";
-        for (auto it: s) 
-            if (it != '*')
-                ans += it;
-
-        return ans;
+        reverse(answer.begin(), answer.end());
+        return answer;
     }
 };

@@ -1,34 +1,41 @@
 class Solution {
 public:
     string minWindow(string s, string t) {
-        //easy approach using the frequency of the string t, if forgot revise it , pretty easy.
-        unordered_map<char, int> tmap;
-        for(auto ch: t) tmap[ch]++;
-        int i = 0, j = 0, counter = t.size();
-        int minStart = 0, minLength = INT_MAX;
-        int n = s.size();
+        //okay, using hash vector and sliding window is problems is pretty easy
+        if (s.empty() || t.empty())
+            return "";
+        
+        int l = 0, r = 0, minLength = INT_MAX, cnt = 0;
+        int n = s.size(), m = t.size(), startIndex = -1;
+        vector<int> hash(256, 0);
 
-        while( j < n ) {
-            //if j th character is having some frequency greater than 0.
-            if( tmap[s[j]] > 0 ) {
-                counter--;
-            }
-            tmap[s[j]]--;
-            j++;
-
-            //this loop is to shrik the starting indexing to reduce the count and get smallest window
-            while(counter == 0) {
-                if(j - i < minLength) {
-                    minStart = i;
-                    minLength = j - i;
-                }
-                tmap[s[i]]++;
-                if(tmap[s[i]] > 0) {
-                    counter++;
-                }
-                i++;
-            }
+        for (int i = 0; i < m; i++) {
+            hash[t[i]]++;
         }
-        return (minLength == INT_MAX) ? "": s.substr(minStart, minLength);
+
+        while (r < n) {
+            if (hash[s[r]] > 0) // this is from t string
+                cnt++;
+            //reduce that count as that string is in the window now
+            hash[s[r]]--;
+
+            while (cnt == m) {
+                //if true all the letters from t -> in s is true
+                //including duplicates
+                if ( (r - l + 1) < minLength ) {
+                    minLength = (r - l + 1);
+                    startIndex = l;
+                }
+                //we got a good pair so lets shrink the window 
+                hash[s[l]]++;
+                if (hash[s[l]] > 0) //this is from t so as we removed it from the windows reduce the cnt
+                    cnt--;
+                l++;
+            }
+
+            r++;
+        }
+
+        return (startIndex == -1) ? "" : s.substr(startIndex, minLength);
     }
 };

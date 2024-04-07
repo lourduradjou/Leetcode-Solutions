@@ -1,35 +1,34 @@
 class Solution {
 public:
     int longestSubstring(string s, int k) {
-        int r = 0, l = 0, maxLength = 0;
+        int right = 0, left = 0, maxLength = 0;
         int n = s.size();
 
-        unordered_map<char,int> mpp;
+        unordered_map<char,int> freqCounter;
         int cnt = 0;
 
         for (int limit = 1; limit <= 26; limit++) {
-            mpp.clear();
-            l = 0;
-            r = 0;
-            cnt = 0;
-
-            while (r < s.size()) {
-                mpp[s[r]]++;
-                if (mpp[s[r]] == k)
+            freqCounter.clear();
+            left = 0; right = 0; cnt = 0;
+            
+            while ( right < s.size() ) {
+                freqCounter[s[right]]++;
+                if ( freqCounter[s[right]] == k )
                     cnt++;
-                //shrink the left side 
-                while (mpp.size() > limit) {
-                    if (mpp[s[l]] == k)
+                //shrink the left side when crosses limit
+                while ( freqCounter.size() > limit ) {
+                    if ( freqCounter[s[left]] == k )
                         cnt--;
-                    mpp[s[l]]--;
+                    freqCounter[s[left]]--;
 
-                    if (mpp[s[l]] == 0)
-                        mpp.erase(s[l]);
-                    l++;
+                    if ( freqCounter[s[left]] == 0 )
+                        freqCounter.erase(s[left]);
+                    left++;
                 }
-                if (cnt == mpp.size())
-                    maxLength = max(maxLength, r - l + 1);
-                r++;
+
+                if ( cnt == freqCounter.size() )
+                    maxLength = max(maxLength, right - left + 1);
+                right++;
             }
         }
         return maxLength;

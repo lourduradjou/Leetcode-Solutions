@@ -1,28 +1,27 @@
 class Solution {
 public:
-    int findContentChildren(vector<int>& g, vector<int>& s) {
-        // 1 <= g.length <= 3 * 10^4
-        // 0 <= s.length <= 3 * 10^4
-        // 1 <= g[i], s[j] <= 2^31 - 1
+    int findContentChildren(vector<int>& reqCookies, vector<int>& availableCookies) {
+        //it is kinda greedy approach to maximize optimization problems
+        //sort the reqCookies array from min to max so that we can satisfy maximum children
 
-        int maxContentChildren = 0;
-        sort(g.begin(), g.end());
-        sort(s.begin(), s.end());
+        sort(reqCookies.begin(), reqCookies.end());
+        sort(availableCookies.begin(), availableCookies.end());
+        int satisfiedCounts = 0;
 
-        int left = 0;
-        int right = 0;
+        int i = 0, j = 0;
+        int n = reqCookies.size(), m = availableCookies.size();
 
-        while(left < g.size() && right < s.size()) {
-            if(g[left] <= s[right]) {
-                maxContentChildren++;
-                left++;
-                right++;
+        while (i < n && j < m) {
+            if ( reqCookies[i] <= availableCookies[j] )
+            {
+                i++;
+                j++;
+                satisfiedCounts++;
             }
-            else {
-                right++;
-            }
+            else 
+                j++;
         }
 
-        return maxContentChildren;
+        return satisfiedCounts;
     }
 };

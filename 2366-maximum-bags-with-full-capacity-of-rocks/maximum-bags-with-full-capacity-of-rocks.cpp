@@ -18,6 +18,9 @@ public:
                 additionalRocks -= rocksRequired[i];
                 ans++;
             }
+            else {
+                break;
+            }
         }
 
         return ans;

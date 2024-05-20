@@ -1,22 +1,19 @@
 class Solution {
+private:
+    int findSubsetSum(vector<int> &nums, int index, int currXor) {
+        if (index == nums.size())
+            return currXor;
+        
+        //pick
+        int pickValue = findSubsetSum(nums, index + 1, currXor ^ nums[index]);
+        //not pick
+        int notPickValue = findSubsetSum(nums, index + 1, currXor);
+        return pickValue + notPickValue;
+    }
+
 public:
     int subsetXORSum(vector<int>& nums) {
-        //generate the subset
-        //find the xor and keep adding , finally return 
-        int sumOfSubset = 0;
-        int n = nums.size();
-
-        for (int i = 0; i < (1 << n); i++) {
-            int currSum = 0;
-            for (int j = 0; j < n; j++) {
-
-                if (i & (1 << j))
-                    currSum = currSum ^ nums[j];
-            }    
-            sumOfSubset += currSum;
-        }
-
-        //cout<<"Zero xor operation: "<<(0 ^ 8)<<endl;
-        return sumOfSubset;
+        //using recursion pick and not pick method
+        return findSubsetSum(nums, 0, 0);
     }
 };

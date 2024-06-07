@@ -3,20 +3,21 @@ public:
     int rob(vector<int>& nums) {
         //tabulation
         int n = nums.size();
-        vector<int> dp(n, 0);
-
-        dp[0] = nums[0];
+        int prev1 = nums[0];
+        int prev2 = 0;
 
         //bottom up
         for (int i = 1; i < n; i++) {
             //same pick and not pick method but from bottom up using tabulation method
             int pick = nums[i];
-            if (i > 1) pick += dp[i - 2];
-            int notPick = dp[i - 1];
+            if (i > 1) pick += prev2; //we are picking two steps back answer with prev2 variable here.. //pick += dp[i-2];
+            int notPick = prev1;
             
-            dp[i] = max(pick, notPick);
+            int curr = max(pick, notPick);
+            prev2 = prev1;
+            prev1 = curr;
         }
 
-        return dp[n-1];
+        return prev1;
     }
 };

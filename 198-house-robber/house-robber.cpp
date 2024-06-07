@@ -1,24 +1,22 @@
 class Solution {
-private:
-    int solve(vector<int> &dp, vector<int> &nums, int n) {
-        if (n == 0) return nums[0]; //first house value
-        if (n < 0) return 0;
-
-        if (dp[n] != -1) return dp[n];
-
-        //pick or not pick method
-        int pick = nums[n] + solve(dp, nums, n-2);//we pick the house money so lets move 2 steps
-
-        int notPick = solve(dp, nums, n - 1);
-
-        return dp[n] = max(pick, notPick);
-    }
-
 public:
     int rob(vector<int>& nums) {
-        //memo + subsequence method we can try
+        //tabulation
         int n = nums.size();
-        vector<int> dp(n, -1);
-        return solve(dp, nums, n-1);
+        vector<int> dp(n, 0);
+
+        dp[0] = nums[0];
+
+        //bottom up
+        for (int i = 1; i < n; i++) {
+            //same pick and not pick method but from bottom up using tabulation method
+            int pick = nums[i];
+            if (i > 1) pick += dp[i - 2];
+            int notPick = dp[i - 1];
+            
+            dp[i] = max(pick, notPick);
+        }
+
+        return dp[n-1];
     }
 };

@@ -6,7 +6,7 @@ public:
         unordered_map<int, int> map;
         map[0] = 1;
 
-        for (int num: nums) {
+        for (int& num: nums) {
             prefixSum += num;
             mod = prefixSum % k;
             if (mod < 0) mod += k;

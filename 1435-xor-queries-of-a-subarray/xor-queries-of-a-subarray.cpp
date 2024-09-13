@@ -14,9 +14,7 @@ public:
             int y = queries[i][1];
 
             int value = prefixXor[y];
-            for (int j = 0; j < x; j++) {
-                value ^= arr[j];
-            }
+            if (x != 0) value ^= prefixXor[x-1];
 
             ans.push_back(value);
         }

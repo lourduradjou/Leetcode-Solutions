@@ -1,33 +1,49 @@
 class Solution {
 public:
     vector<vector<vector<int>>> dp;
-    int findMaxCherriesPath(vector<vector<int>> &grid, int i, int robot1j, int robot2j) {
-        if(i == grid.size()) return 0; //i reaches last row
-        if(robot1j < 0 || robot1j >= grid[0].size() || robot2j < 0 || robot2j >= grid[0].size()) return 0; //column indexing croses the matrix
+    int findMaxCherriesPath(vector<vector<int>> &grid, int row_loc, int robot1_loc, int robot2_loc, int rows, int cols, 
+    vector<vector<vector<int>>>& dp) {
+        if (robot1_loc < 0 || robot1_loc >= cols || robot2_loc < 0 || robot2_loc >= cols) {
+            return -1e8;
+        }
 
-        if(dp[i][robot1j][robot2j] != -1) return dp[i][robot1j][robot2j];
-
-        int result = 0;
-        result += grid[i][robot1j];
-        if(robot1j != robot2j) result += grid[i][robot2j];
-
-        int maxForNextRow = 0;
-        for(int x = robot1j - 1; x <= robot1j + 1; x++) {
-            for(int y = robot2j - 1; y <= robot2j + 1; y++) {
-                //this make loop over all the nine possibilities in the matrix;
-                maxForNextRow = max(maxForNextRow, findMaxCherriesPath(grid, i+1, x, y));
+        if (row_loc == rows-1) {
+            if (robot1_loc == robot2_loc) return grid[row_loc][robot1_loc]; //we can also use roboto2_loc, anyway they are same
+            else {
+                return grid[row_loc][robot1_loc] + grid[row_loc][robot2_loc];
             }
         }
 
-        result += maxForNextRow;
-        return dp[i][robot1j][robot2j] = result;
+       
+
+        if (dp[row_loc][robot1_loc][robot2_loc] != -1) 
+            return dp[row_loc][robot1_loc][robot2_loc];
+
+        int maxi = -1e8;
+
+        for (int dj1 = -1; dj1 <= 1; dj1++) {
+            for (int dj2 = -1; dj2 <= 1; dj2++) {
+                int value = 0;
+                if (robot1_loc == robot2_loc) value = grid[row_loc][robot1_loc]; //we can also use roboto2_loc, anyway they are same
+                else {
+                    value = grid[row_loc][robot1_loc] + grid[row_loc][robot2_loc];
+                }
+                value += findMaxCherriesPath(grid, row_loc + 1, robot1_loc + dj1, robot2_loc + dj2, rows, cols, dp);
+                maxi = max(maxi, value);
+            }
+        }
+
+        return dp[row_loc][robot1_loc][robot2_loc] = maxi;
+        
     }
 
 
     int cherryPickup(vector<vector<int>>& grid) {
         //this is a 3d dynamic array approaching problem interesting actually
-        int m = grid.size(), n = grid[0].size();
-        dp = vector<vector<vector<int>>> (m, vector<vector<int>> (n, vector<int> (n, -1)) );
-        return findMaxCherriesPath(grid, 0, 0, n-1);
+        int n = grid.size(); //rows size
+        int m = grid[0].size(); //columns size
+        vector<vector<vector<int>>> dp(n, vector<vector<int>> (m, vector<int> (m, -1)));
+
+        return findMaxCherriesPath(grid, 0, 0, m-1, n, m, dp);
     }
 };

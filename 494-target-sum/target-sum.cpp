@@ -15,7 +15,6 @@ int countPartitions(int n, int d, vector<int>& arr) {
         // if it is even then it is fine
         if ( (totSum - d) < 0 || (totSum - d) % 2 ) return 0;
         vector<int> prev(sum + 1, 0);
-        vector<int> cur(sum + 1, 0);
         
         //base cases
         if (arr[0] == 0) prev[0] = 2;
@@ -23,16 +22,15 @@ int countPartitions(int n, int d, vector<int>& arr) {
         if (arr[0] != 0 && arr[0] <= sum) prev[arr[0]] = 1;
 
         for (int ind = 1; ind < n; ind++) {
-            for (int target = 0; target <= sum; target++) {
+            for (int target = sum; target >= 0; target--) {
                 int notPick = prev[target];
                 int pick = 0;
                 if (arr[ind] <= target) {
                     pick = prev[target - arr[ind]];
                 }
                 
-                cur[target] = (pick + notPick);
+                prev[target] = (pick + notPick);
             }
-            prev = cur;
         }
         
         return prev[sum];

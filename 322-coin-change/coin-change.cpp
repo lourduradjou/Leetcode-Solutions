@@ -1,27 +1,28 @@
 class Solution {
-private:
-    int findCoinChange(int ind, int target, vector<int>& coins, vector<vector<int>>& dp) {
-        //base case
-        if (ind == 0) {
-            if (target % coins[ind] == 0) return target / coins[ind];
-            else return 1e8;
-        }
-
-        if (dp[ind][target] != -1) return dp[ind][target];
-
-        int notPick = findCoinChange(ind-1, target, coins, dp);
-        int pick = 1e8;
-        if (coins[ind] <= target) {
-            pick = 1 + findCoinChange(ind, target - coins[ind], coins, dp);
-        }
-
-        return dp[ind][target] = min(notPick, pick);
-    }
 public:
     int coinChange(vector<int>& coins, int amount) {
         int n = coins.size();
-        vector<vector<int>> dp(n, vector<int>(amount + 1, -1));
-        int ans = findCoinChange(n-1, amount, coins, dp);
+        vector<vector<int>> dp(n, vector<int>(amount + 1, 0));
+        //tabulation
+        //base case
+        for (int target = 0; target <= amount; target++) {
+            if (target % coins[0] == 0) dp[0][target] = target / coins[0];
+            else dp[0][target] = 1e8;
+        }
+
+        for (int ind = 1; ind < n; ind++) {
+            for (int target = 0; target <= amount; target++) {
+                int notPick = dp[ind-1][target];
+                int pick = 1e8;
+                if (coins[ind] <= target) {
+                    pick = 1 + dp[ind][target - coins[ind]];
+                }
+
+                dp[ind][target] = min(pick, notPick);
+            }
+        }
+
+        int ans = dp[n-1][amount];
         return ans >= 1e8 ? -1: ans;
     }
 };

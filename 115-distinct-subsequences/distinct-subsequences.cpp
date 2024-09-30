@@ -1,32 +1,22 @@
 class Solution {
-private:
-      const int MOD = 1e9 + 7;
-      int solve(int i, int j, string &s, string &t,
-      int &n, int &m, vector<vector<int>> &dp) {
-          if (i == n)
-            return j == m ? 1 : 0;
-          
-          if (j >= m)
-            return 1;
-        
-          if (dp[i][j] != -1)
-            return dp[i][j];
-          
-          int notPick = solve(i+1, j, s, t, n, m, dp);
-          int pick = 0;
-          
-          if (s[i] == t[j]) {
-              pick = solve(i+1, j+1, s, t, n, m, dp);
-          }
-          
-          return dp[i][j] = (pick + notPick) % MOD;
-      }
-      
 public:
+    int solveNumDistance(int ind1, int ind2, string& s1, string& s2,vector<vector<int>>& dp) {
+        if (ind2 < 0) return 1;
+        if (ind1 < 0) return 0;
+       
+        if (dp[ind1][ind2] != -1) {
+            return dp[ind1][ind2];
+        }
+
+        if (s1[ind1] == s2[ind2]) {
+            return dp[ind1][ind2] = solveNumDistance(ind1-1, ind2-1, s1, s2, dp) + solveNumDistance(ind1-1, ind2, s1, s2, dp);
+        }
+
+        return dp[ind1][ind2] = solveNumDistance(ind1-1, ind2, s1, s2, dp);
+    }
     int numDistinct(string s, string t) {
-      int n = s.size(), m = t.size();
-      vector<vector<int>> dp(n+1 , vector<int>(m+1, -1));
-      
-      return solve(0, 0, s, t, n, m, dp);
+        int n = s.size(), m = t.size();
+        vector<vector<int>> dp(n, vector<int>(m, -1));
+        return solveNumDistance(n-1, m-1, s, t, dp);
     }
 };

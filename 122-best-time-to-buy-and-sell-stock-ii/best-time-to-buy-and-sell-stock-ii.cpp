@@ -3,33 +3,24 @@ public:
     int maxProfit(vector<int>& prices) {
         //using recursion + memoization 
         int n = prices.size();
-        vector<int> next(2, 0);
-        vector<int> cur(2, 0);
-
+        // vector<int> next(2, 0);
+        // vector<int> cur(2, 0);
+        int nextNotTake,nextTake,curNotTake,curTake;
+        nextTake = nextNotTake = 0; //base case , yeah in the tabu itself write that , to understand easily here
         
         for (int ind = n-1; ind >= 0; ind--) {
-            for (int isAllowedToBuy = 0; isAllowedToBuy < 2; isAllowedToBuy++) {
-                int profit = 0;
-                if (isAllowedToBuy) {
-                    //we have to choice now, either to buy the stocks and move
-                    // or not to buy the stock but move further
-                    profit = max( 
-                                (-prices[ind] + next[0]), //bought the stock
-                                (0 +  next[1]) // not bought the stock
-                    );
-                }
-                else {
-                    profit = max( 
-                                (prices[ind] + next[1]), //sold the stock
-                                (0 +  next[0]) // not sold the stock
-                    );
-
-                }
-
-                cur[isAllowedToBuy] = profit;
-            }
-            next = cur;
+            curTake = max( 
+                        (-prices[ind] + nextNotTake), //bought the stock
+                        (0 +  nextTake) // not bought the stock
+            );
+            curNotTake = max( 
+                        (prices[ind] + nextTake), //sold the stock
+                        (0 +  nextNotTake) // not sold the stock
+            );
+            nextTake = curTake;
+            nextNotTake = curNotTake;
         }
-        return next[1]; // 1 means allowed to buy, 0 means allowed to sell;
+
+        return nextTake; 
     }
 };

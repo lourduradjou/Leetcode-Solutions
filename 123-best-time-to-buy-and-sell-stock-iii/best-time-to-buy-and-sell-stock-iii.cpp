@@ -22,8 +22,27 @@ private:
 public:
     int maxProfit(vector<int>& prices) {
         int n = prices.size();
-        vector<vector<vector<int>>> dp(n , vector<vector<int>>(2, vector<int> (3, -1)));
+        vector<vector<vector<int>>> dp(n+1 , vector<vector<int>>(2, vector<int> (3, 0)));
 
-        return findMaxProfit(0, 1, 2, prices, n, dp);
+        for (int ind = n-1; ind >= 0; ind--) {
+            for (int buy = 0; buy <= 1; buy++) {
+                for (int capacity = 1; capacity <= 2; capacity++) {
+                    if (buy) {
+                        //in buy case we have two subcase either buy and move or don't
+                        dp[ind][buy][capacity] = 
+                                max( -prices[ind] + dp[ind+1][0][capacity]
+                                    , 0 + dp[ind+1][1][capacity] );
+                    }
+                    else {
+                        //in sell case we have two subcase either sell and move or don't
+                        dp[ind][buy][capacity] = 
+                                max( prices[ind] + dp[ind+1][1][capacity-1]
+                                    , 0 + dp[ind+1][0][capacity] );
+                    }
+                }
+            }
+        }
+
+        return dp[0][1][2];
     }
 };

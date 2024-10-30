@@ -1,33 +1,37 @@
 class Solution {
 public:
-    vector<int> largestDivisibleSubset(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> lisLength(n, 1), prevIndex(n, -1);
-        int maxLen = 0, index = -1;
+    vector<int> largestDivisibleSubset(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> dp(n, 1), hash(n);
+        int maxi = 1;
+        int lastIndex = 0;
 
-        sort(nums.begin(), nums.end()); //sorting to decreasing the checking requirements ..without that also we can do
-        for(int i = 0; i < n; i++) {
-            for(int j = i-1; j >= 0; j--) {
-                if(nums[i] % nums[j] == 0 && 1 + lisLength[j] > lisLength[i]) {
-                    lisLength[i] = 1 + lisLength[j];
-                    prevIndex[i] = j;
+        sort(arr.begin(), arr.end());
+
+        for (int i = 1; i < n; i++) {
+            hash[i] = i;
+            for (int prev = 0; prev < i; prev++) {
+                if ( arr[i] % arr[prev] == 0 && dp[i] < dp[prev] + 1 ) {
+                    dp[i] = 1 + dp[prev]; //take the largest value
+                    hash[i] = prev; //mark to print, if needed
                 }
             }
 
-            //for the i th value we can found the best possible subset
-            if(lisLength[i] > maxLen) {
-                maxLen = lisLength[i];
-                index = i;
+            //markdown the last index to trace back
+            if (dp[i] > maxi) {
+                maxi = dp[i];
+                lastIndex = i;
             }
         }
 
-        vector<int> ans;
-        while(index != -1) {
-            ans.push_back(nums[index]);
-            index = prevIndex[index];
+        vector<int> temp;
+        temp.push_back(arr[lastIndex]);
+        while (hash[lastIndex] != lastIndex) {
+            temp.push_back(arr[hash[lastIndex]]);
+            lastIndex = hash[lastIndex];
         }
 
-        return ans;
-
+        reverse(temp.begin(), temp.end());
+        return temp;
     }
 };

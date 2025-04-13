@@ -1,12 +1,18 @@
 class Solution:
     def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
-        #using set store the numbers which are there already
-        #iterate and find the missing one
-        set_nums = set(nums)
+        # By chaning the respective index values to be negative we
+        # can easily iterate and see which index was never touch. 
+        # space complexity of -> O(1) expect returning list
+
         missed_numbers = []
 
-        for req_num in range(1, len(nums) + 1):
-            if req_num not in set_nums:
-                missed_numbers.append( req_num )
+        for num in nums:
+            index = abs(num) - 1
+            nums[index] = -abs(nums[index])      
         
+        for index in range(0, len(nums)):
+            if nums[index] > 0: 
+                missed_number = index + 1
+                missed_numbers.append(missed_number)
+
         return missed_numbers

@@ -1,20 +1,19 @@
 class Solution {
     public int tribonacci(int n) {
-        int n0 = 0;
-        int n1 = 1;
-        int n2 = 1;
-        int ans = 0;
-
-        if (n == 0) return 0;
-        if (n <= 2) return 1;
-
-        for (int i = 3; i <= n; i++) {
-            ans = n0 + n1 + n2;
-            n0 = n1;
-            n1 = n2;
-            n2 = ans;
+        if (n == 0)  {
+            return 0;
+        } else if (n == 1 || n == 2) {
+            return 1;
         }
 
-        return ans;
+        int[] dp = new int[n+1];
+        dp[1] = 1;
+        dp[2] = 1;
+
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i-1] + dp[i-2] + dp[i-3];
+        }
+
+        return dp[n];
     }
 }
